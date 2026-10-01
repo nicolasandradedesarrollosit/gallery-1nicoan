@@ -1,0 +1,47 @@
+---
+import { LOCALE, SITE } from '../../config/site';
+import { absUrl } from '../../lib/seo';
+
+export interface SeoProps {
+  title: string;
+  description: string;
+  /** Path or absolute URL of the social image. */
+  image?: { url: string; width: number; height: number; alt?: string };
+  noindex?: boolean;
+}
+
+type Props = SeoProps;
+
+const {
+  title,
+  description,
+  image = { url: SITE.defaultOgImage, width: 1200, height: 630, alt: SITE.name },
+  noindex = false,
+} = Astro.props;
+
+const canonicalUrl = absUrl(Astro.url.pathname);
+const imageUrl = absUrl(image.url);
+const robots = noindex ? 'noindex, follow' : 'index, follow, max-image-preview:large';
+---
+
+<title>{title}</title>
+<meta name="description" content={description} />
+<link rel="canonical" href={canonicalUrl} />
+<meta name="robots" content={robots} />
+<meta name="author" content={SITE.name} />
+
+<meta property="og:site_name" content={SITE.name} />
+<meta property="og:locale" content={LOCALE.ogLocale} />
+<meta property="og:type" content="website" />
+<meta property="og:title" content={title} />
+<meta property="og:description" content={description} />
+<meta property="og:url" content={canonicalUrl} />
+<meta property="og:image" content={imageUrl} />
+<meta property="og:image:width" content={String(image.width)} />
+<meta property="og:image:height" content={String(image.height)} />
+<meta property="og:image:alt" content={image.alt ?? title} />
+
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:title" content={title} />
+<meta name="twitter:description" content={description} />
+<meta name="twitter:image" content={imageUrl} />

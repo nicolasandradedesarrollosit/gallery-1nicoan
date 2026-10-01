@@ -1,0 +1,11 @@
+---
+/** Emits a JSON-LD <script>. Build the data with the helpers in lib/seo.ts. */
+interface Props {
+  data: Record<string, unknown>;
+}
+const { data } = Astro.props;
+// Escape "<" so no content string can close the <script> element.
+const json = JSON.stringify(data).replace(/</g, '\\u003c');
+---
+
+<script type="application/ld+json" is:inline set:html={json} />

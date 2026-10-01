@@ -1,0 +1,12 @@
+---
+import Icon from '../ui/Icon.astro';
+import { ui } from '../../i18n/ui';
+
+/** Bottom of the page: nothing but the way back to the top. */
+---
+
+<footer class="wrap flex justify-center pt-16 pb-12">
+  <a href="#main" class="icon-btn" aria-label={ui.footer.top}>
+    <Icon name="arrow-up" class="size-[1.05rem]" />
+  </a>
+</footer>

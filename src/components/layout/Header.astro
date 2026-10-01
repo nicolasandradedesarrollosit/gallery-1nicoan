@@ -1,0 +1,11 @@
+---
+import ThemeToggle from './ThemeToggle.astro';
+import { ui } from '../../i18n/ui';
+
+/** Top of the page: the oversized title (the portfolio's footer wordmark style) and the theme toggle. */
+---
+
+<header class="wrap flex items-start justify-between gap-4 pt-6 sm:pt-10">
+  <h1 class="text-[clamp(3rem,13vw,9rem)] leading-[0.9] font-semibold tracking-tighter text-fg">{ui.title}</h1>
+  <ThemeToggle label={ui.theme} />
+</header>

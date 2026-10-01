@@ -1,0 +1,72 @@
+---
+import { Font } from 'astro:assets';
+import { ClientRouter } from 'astro:transitions';
+import '../styles/index.css';
+
+import SEO, { type SeoProps } from '../components/seo/SEO.astro';
+import JsonLd from '../components/seo/JsonLd.astro';
+import Header from '../components/layout/Header.astro';
+import Footer from '../components/layout/Footer.astro';
+import PageLoader from '../components/layout/PageLoader.astro';
+import { LOCALE } from '../config/site';
+import { ui } from '../i18n/ui';
+import { graph } from '../lib/seo';
+
+interface Props {
+  seo: SeoProps;
+  /** Extra JSON-LD nodes (ImageGallery…). */
+  jsonLd?: Record<string, unknown>[];
+}
+
+const { seo, jsonLd = [] } = Astro.props;
+---
+
+<!doctype html>
+<html lang={LOCALE.htmlLang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!--
+      Runs before first paint so the stored or system theme never flashes, and again
+      after every client-side navigation (the router replaces <html> attributes).
+    -->
+    <script is:inline>
+      (function () {
+        function applyTheme() {
+          var theme;
+          try {
+            theme = localStorage.getItem('theme');
+          } catch (e) {}
+          if (theme !== 'light' && theme !== 'dark') {
+            theme = matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+          }
+          document.documentElement.dataset.theme = theme;
+        }
+        applyTheme();
+        // The page opens behind the curtain; lib/loader.ts lifts it once the photos are in.
+        document.documentElement.dataset.loading = 'out';
+        document.addEventListener('astro:after-swap', applyTheme);
+      })();
+    </script>
+    <Font cssVariable="--font-geist" preload={[{ weight: 400, style: 'normal', subset: 'latin' }]} />
+    <Font cssVariable="--font-geist-mono" />
+    <SEO {...seo} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <meta name="theme-color" content="#fafaf9" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0c0c0e" media="(prefers-color-scheme: dark)" />
+    <JsonLd data={graph(...jsonLd)} />
+    <ClientRouter />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{ui.skip}</a>
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+    <PageLoader />
+    <script>
+      import '../lib/client';
+    </script>
+  </body>
+</html>
