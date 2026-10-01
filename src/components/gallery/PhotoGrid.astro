@@ -1,0 +1,39 @@
+---
+import PhotoTile from './PhotoTile.astro';
+import { GALLERY } from '../../config/site';
+import { justify } from '../../lib/layout';
+import { photoRatio, type Photo } from '../../lib/photos';
+
+/**
+ * The feed, hung like a wall of frames: rows of uneven size where every photo keeps
+ * its proportions. Each screen size gets its own split into rows, worked out here at
+ * build time and handed to `.mosaic` (index.css) as custom properties. Photos stay
+ * in order, newest first.
+ */
+interface Props {
+  photos: Photo[];
+}
+const { photos } = Astro.props;
+
+const ratios = photos.map(photoRatio);
+const { seed, layouts } = GALLERY;
+// A different seed per screen size, so the splits do not mirror each other.
+const base = justify(ratios, layouts.base, seed);
+const md = justify(ratios, layouts.md, seed + 1);
+const lg = justify(ratios, layouts.lg, seed + 2);
+---
+
+<section class="wrap pt-8 sm:pt-12">
+  <ul role="list" class="mosaic">
+    {
+      photos.map((photo, i) => (
+        <li
+          class="mosaic__item"
+          style={`--f-base:${base[i].fraction};--n-base:${base[i].count};--f-md:${md[i].fraction};--n-md:${md[i].count};--f-lg:${lg[i].fraction};--n-lg:${lg[i].count}`}
+        >
+          <PhotoTile photo={photo} index={i} />
+        </li>
+      ))
+    }
+  </ul>
+</section>

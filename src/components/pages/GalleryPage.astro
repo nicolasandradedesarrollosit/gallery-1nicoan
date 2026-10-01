@@ -1,0 +1,16 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Lightbox from '../gallery/Lightbox.astro';
+import PhotoGrid from '../gallery/PhotoGrid.astro';
+import { ui } from '../../i18n/ui';
+import { getPhotos } from '../../lib/photos';
+import { galleryLd } from '../../lib/seo';
+
+/** The only page: the photo feed. */
+const photos = await getPhotos();
+---
+
+<BaseLayout seo={ui.meta.home} jsonLd={[galleryLd()]}>
+  <PhotoGrid photos={photos} />
+  <Lightbox />
+</BaseLayout>

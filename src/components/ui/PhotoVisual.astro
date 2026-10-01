@@ -1,0 +1,40 @@
+---
+import { photoRatio, type Photo } from '../../lib/photos';
+
+/**
+ * A photo at its own proportions, or a generated placeholder (dot grid + number)
+ * while there is none. The file is served exactly as it was exported: no resizing,
+ * no re-encoding, no lazy loading (the page waits for every photo behind the curtain).
+ */
+interface Props {
+  photo: Photo;
+  /** "01", "02"… shown on the placeholder. */
+  number: string;
+  class?: string;
+}
+const { photo, number, class: className } = Astro.props;
+const { data } = photo;
+---
+
+{
+  data.image ? (
+    <img
+      src={data.image.src}
+      width={data.image.width}
+      height={data.image.height}
+      alt={data.alt}
+      class:list={['block h-auto w-full bg-surface', className]}
+    />
+  ) : (
+    <div
+      class:list={['relative overflow-hidden border border-line bg-surface', className]}
+      style={`aspect-ratio:${photoRatio(photo)}`}
+      aria-hidden="true"
+    >
+      <div class="dots" />
+      <span class="absolute right-4 bottom-1 font-mono text-[clamp(2rem,7vw,4.5rem)] leading-none font-medium text-muted/50">
+        {number}
+      </span>
+    </div>
+  )
+}

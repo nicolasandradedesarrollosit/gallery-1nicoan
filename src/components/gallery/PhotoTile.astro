@@ -1,0 +1,36 @@
+---
+import PhotoVisual from '../ui/PhotoVisual.astro';
+import { photoMeta, photoNumber, photoRatio, type Photo } from '../../lib/photos';
+
+/**
+ * One photo of the grid. It is a button that opens the lightbox (`data-photo`,
+ * handled in lib/client.ts) and carries everything the lightbox shows. The lightbox
+ * uses the same file as the grid, so it opens without loading anything.
+ */
+interface Props {
+  photo: Photo;
+  index: number;
+}
+const { photo, index } = Astro.props;
+const { image, alt } = photo.data;
+const number = photoNumber(index);
+---
+
+<button
+  type="button"
+  class="group block w-full cursor-zoom-in"
+  aria-label={alt}
+  data-reveal
+  data-photo
+  data-full={image?.src}
+  data-alt={alt}
+  data-meta={photoMeta(photo)}
+  data-number={number}
+  data-ratio={photoRatio(photo)}
+>
+  <PhotoVisual
+    photo={photo}
+    number={number}
+    class="transition-opacity duration-300 group-hover:opacity-80"
+  />
+</button>

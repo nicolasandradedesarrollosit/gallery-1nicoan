@@ -1,0 +1,40 @@
+---
+import Icon from '../ui/Icon.astro';
+import { ui } from '../../i18n/ui';
+
+/**
+ * The enlarged photo. Rendered once and empty: lib/lightbox.ts fills it from the
+ * tile that was clicked. Clicks are handled by delegation in lib/client.ts; Esc and
+ * the focus trap come with <dialog>.
+ */
+const t = ui.lightbox;
+---
+
+<dialog class="lightbox" aria-label={t.label} tabindex="-1" data-lightbox>
+  <div class="wrap flex h-14 items-center justify-between" data-lightbox-backdrop>
+    <p class="label" data-lightbox-count></p>
+    <button type="button" class="icon-btn" aria-label={t.close} data-lightbox-close>
+      <Icon name="x" class="size-[1.15rem]" />
+    </button>
+  </div>
+
+  <div class="grid place-items-center px-(--gutter)" data-lightbox-backdrop>
+    <img class="lightbox__image" alt="" data-lightbox-image hidden />
+    <div class="lightbox__placeholder" data-lightbox-placeholder hidden>
+      <div class="dots"></div>
+      <span
+        class="absolute right-6 bottom-2 font-mono text-[clamp(3rem,12vw,8rem)] leading-none font-medium text-muted/50"
+        data-lightbox-number></span>
+    </div>
+  </div>
+
+  <div class="wrap flex h-16 items-center justify-between gap-4" data-lightbox-backdrop>
+    <button type="button" class="icon-btn" aria-label={t.previous} data-lightbox-prev>
+      <Icon name="arrow-left" class="size-[1.15rem]" />
+    </button>
+    <p class="label truncate text-center" data-lightbox-meta></p>
+    <button type="button" class="icon-btn" aria-label={t.next} data-lightbox-next>
+      <Icon name="arrow-right" class="size-[1.15rem]" />
+    </button>
+  </div>
+</dialog>
